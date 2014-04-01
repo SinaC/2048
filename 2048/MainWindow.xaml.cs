@@ -38,7 +38,13 @@ namespace _2048
         public readonly SolidColorBrush Below4 = new SolidColorBrush(Colors.Black);
         public readonly SolidColorBrush Above4 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#f9f6f2"));
 
-        public const int Size = 4;
+        public const int FontSize2To64 = 55;
+        public const int FontSize128To512 = 45;
+        public const int FontSize1024To2048 = 35;
+        public const int FontSizeSuper = 30;
+
+        public const int TileSize = 121;
+        public const int BoardSize = 4;
         public GameManager GameManager { get; set; }
 
         public TextBlock[,] TextBlocks;
@@ -48,23 +54,23 @@ namespace _2048
         {
             InitializeComponent();
 
-            GameManager = new GameManager(Size, 2);
+            GameManager = new GameManager(BoardSize, 2);
 
-            TextBlocks = new TextBlock[Size,Size];
-            Borders = new Border[Size,Size];
+            TextBlocks = new TextBlock[BoardSize,BoardSize];
+            Borders = new Border[BoardSize,BoardSize];
 
-            for(int i = 0; i < Size; i++)
+            for(int i = 0; i < BoardSize; i++)
                 MainGrid.ColumnDefinitions.Add(new ColumnDefinition
                     {
-                        Width = new GridLength(60)
+                        Width = new GridLength(TileSize)
                     });
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < BoardSize; i++)
                 MainGrid.RowDefinitions.Add(new RowDefinition
                 {
-                    Height = new GridLength(60)
+                    Height = new GridLength(TileSize)
                 });
-            for(int y = 0; y < Size; y++)
-                for(int x = 0; x < Size; x++)
+            for(int y = 0; y < BoardSize; y++)
+                for(int x = 0; x < BoardSize; x++)
                 {
                     TextBlock textBlock = new TextBlock
                         {
@@ -94,8 +100,8 @@ namespace _2048
         {
             if (GameManager == null || GameManager.Grid == null)
                 return;
-            for (int y = 0; y < Size; y++)
-                for (int x = 0; x < Size; x++)
+            for (int y = 0; y < BoardSize; y++)
+                for (int x = 0; x < BoardSize; x++)
                 {
                     int value = GameManager.Grid.Cells[x, y];
                     TextBlocks[x, y].Text = value > 0 ? value.ToString(CultureInfo.InvariantCulture) : null;
@@ -107,50 +113,62 @@ namespace _2048
                         case 2:
                             Borders[x, y].Background = Tile2;
                             TextBlocks[x, y].Foreground = Below4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 4:
                             Borders[x, y].Background = Tile4;
                             TextBlocks[x, y].Foreground = Below4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 8:
                             Borders[x, y].Background = Tile8;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 16:
                             Borders[x, y].Background = Tile16;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 32:
                             Borders[x, y].Background = Tile32;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 64:
                             Borders[x, y].Background = Tile64;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize2To64;
                             break;
                         case 128:
                             Borders[x, y].Background = Tile128;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize128To512;
                             break;
                         case 256:
                             Borders[x, y].Background = Tile256;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize128To512;
                             break;
                         case 512:
                             Borders[x, y].Background = Tile512;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize128To512;
                             break;
                         case 1024:
                             Borders[x, y].Background = Tile1024;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize1024To2048;
                             break;
                         case 2048:
                             Borders[x, y].Background = Tile2048;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSize1024To2048;
                             break;
                         default:
                             Borders[x, y].Background = TileSuper;
                             TextBlocks[x, y].Foreground = Above4;
+                            TextBlocks[x, y].FontSize = FontSizeSuper;
                             break;
                     }
                 }
@@ -176,9 +194,9 @@ namespace _2048
                     break;
             }
             Refresh();
-            for (int y = 0; y < Size; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
-                for (int x = 0; x < Size; x++)
+                for (int x = 0; x < BoardSize; x++)
                     System.Diagnostics.Debug.Write(GameManager.Grid.Cells[x,y].ToString(CultureInfo.InvariantCulture).PadLeft(4));
                 System.Diagnostics.Debug.WriteLine(String.Empty);
             }
