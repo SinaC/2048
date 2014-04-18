@@ -44,9 +44,14 @@ namespace _2048
         public const int FontSize1024To2048 = 35;
         public const int FontSizeSuper = 30;
 
-        public const int TileSize = 121;
-        public const int BoardSize = 4;
+        //public const int TileSize = 121;
+        //public const int BoardSize = 4;
+        public readonly int TileSize;
+        public readonly int BoardSize;
         public GameManager GameManager { get; set; }
+
+        public DispatcherTimer Timer;
+        public DateTime StartTime;
 
         public TextBlock[,] TextBlocks;
         public Border[,] Borders;
@@ -54,6 +59,12 @@ namespace _2048
         public MainWindow()
         {
             InitializeComponent();
+
+            Timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, Timer_Callback, Dispatcher);
+            Timer.Stop();
+
+            TileSize = Properties.Settings.Default.TileSize;
+            BoardSize = Properties.Settings.Default.BoardSize;
 
             GameManager = new GameManager(BoardSize, 2);
             GameManager.GridModified += GameManagerOnGridModified;
@@ -97,7 +108,7 @@ namespace _2048
                     TextBlocks[x, y] = textBlock;
                 }
         }
-    
+
         private void GameManagerOnGridModified(object sender, EventArgs eventArgs)
         {
             Refresh();
@@ -233,8 +244,9 @@ namespace _2048
                             break;
                     }
                 }
-            ScoreText.Text = GameManager.Grid.Score.ToString(CultureInfo.InvariantCulture);
-            MovesText.Text = GameManager.Moves.ToString(CultureInfo.InvariantCulture);
+            //ScoreText.Text = GameManager.Grid.Score.ToString(CultureInfo.InvariantCulture);
+            //MovesText.Text = GameManager.Moves.ToString(CultureInfo.InvariantCulture);
+            UpdateTitle();
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
@@ -258,7 +270,20 @@ namespace _2048
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            StartTime = DateTime.Now;
+            Timer.Start();
             GameManager.Start();
+        }
+
+        private void Timer_Callback(object sender, EventArgs eventArgs)
+        {
+            Dispatcher.Invoke(UpdateTitle);
+        }
+
+        private void UpdateTitle()
+        {
+            TimeSpan ts = DateTime.Now - StartTime;
+            MainWindowInstance.Title = String.Format("2048 - Score: {0} - Moves: {1} - Time: {2:0.00} sec.", GameManager.Grid.Score, GameManager.Moves, ts.TotalSeconds);
         }
 
         public void Send(Key key)
