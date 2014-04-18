@@ -109,52 +109,52 @@ namespace _2048
             }
             System.Diagnostics.Debug.WriteLine("===============================");
 
-            AI ai = new AI();
-            List<Directions> moves = ai.GetBestMoves(GameManager.Grid);
-            List<Directions> moves2 = ai.GetBestMoves2(GameManager.Grid);
+            //AI ai = new AI();
+            //List<Directions> moves = ai.GetBestMoves(GameManager.Grid);
+            //List<Directions> moves2 = ai.GetBestMoves2(GameManager.Grid);
 
-            if (moves.Any())
-                AdvicesText.Text = moves.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
-            else
-                AdvicesText.Text = "no move";
-            if (moves2.Any())
-                AdvicesText.Text += "***" + moves2.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
-            else
-                AdvicesText.Text += "***no move";
+            //if (moves.Any())
+            //    AdvicesText.Text = moves.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
+            //else
+            //    AdvicesText.Text = "no move";
+            //if (moves2.Any())
+            //    AdvicesText.Text += "***" + moves2.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
+            //else
+            //    AdvicesText.Text += "***no move";
 
-            if (moves2.Any())
-            {
-                //SendDelegate sd = Send;
-                //IAsyncResult asyncResult = null;
-                switch (moves.Last())
-                {
-                    case Directions.None:
-                        // NOP
-                        break;
-                    case Directions.Left:
-                        //Send(Key.Left);
-                        //asyncResult = sd.BeginInvoke(Key.Left, null, null);
-                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Left)));
-                        break;
-                    case Directions.Up:
-                        //Send(Key.Up);
-                        //asyncResult = sd.BeginInvoke(Key.Up, null, null);
-                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Up)));
-                        break;
-                    case Directions.Right:
-                        //Send(Key.Right);
-                        //asyncResult = sd.BeginInvoke(Key.Right, null, null);
-                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Right)));
-                        break;
-                    case Directions.Down:
-                        //Send(Key.Down);
-                        //asyncResult = sd.BeginInvoke(Key.Down, null, null);
-                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Down)));
-                        break;
-                }
-                //if (asyncResult != null)
-                //    sd.EndInvoke(asyncResult);
-            }
+            //if (moves2.Any())
+            //{
+            //    //SendDelegate sd = Send;
+            //    //IAsyncResult asyncResult = null;
+            //    switch (moves.Last())
+            //    {
+            //        case Directions.None:
+            //            // NOP
+            //            break;
+            //        case Directions.Left:
+            //            //Send(Key.Left);
+            //            //asyncResult = sd.BeginInvoke(Key.Left, null, null);
+            //            Dispatcher.BeginInvoke(new Action(() => Send(Key.Left)));
+            //            break;
+            //        case Directions.Up:
+            //            //Send(Key.Up);
+            //            //asyncResult = sd.BeginInvoke(Key.Up, null, null);
+            //            Dispatcher.BeginInvoke(new Action(() => Send(Key.Up)));
+            //            break;
+            //        case Directions.Right:
+            //            //Send(Key.Right);
+            //            //asyncResult = sd.BeginInvoke(Key.Right, null, null);
+            //            Dispatcher.BeginInvoke(new Action(() => Send(Key.Right)));
+            //            break;
+            //        case Directions.Down:
+            //            //Send(Key.Down);
+            //            //asyncResult = sd.BeginInvoke(Key.Down, null, null);
+            //            Dispatcher.BeginInvoke(new Action(() => Send(Key.Down)));
+            //            break;
+            //    }
+            //    //if (asyncResult != null)
+            //    //    sd.EndInvoke(asyncResult);
+            //}
         }
 
         private void Refresh()
