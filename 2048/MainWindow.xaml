@@ -34,6 +34,8 @@
             <TextBlock Grid.Row="1" Grid.Column="1" Margin="5,0" x:Name="MovesText"/>
         </Grid>
         
+        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="AdvicesText"/>
+        
         <Button Grid.Row="1" Grid.Column="0" Click="Button_Click">
             <TextBlock Text="Start"/>
         </Button>

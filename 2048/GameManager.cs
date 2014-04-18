@@ -11,6 +11,8 @@ namespace _2048
         public Grid Grid { get; private set; }
         public int Moves { get; private set; }
 
+        public event EventHandler GridModified;
+
         public GameManager(int size, int startTileCount)
         {
             _random = new Random();
@@ -23,6 +25,8 @@ namespace _2048
             Grid = new Grid(Size);
             Moves = 0;
             AddStartTiles();
+            if (GridModified != null)
+                GridModified(this, new EventArgs());
         }
 
         public void Test(params int[] cells)
@@ -57,7 +61,10 @@ namespace _2048
             if (moved)
             {
                 Moves++;
-                return AddRandomTile();
+                bool tileAdded = Grid.AddRandomTile();
+                if (GridModified != null)
+                    GridModified(this, new EventArgs());
+                return tileAdded;
             }
             return true;
         }
@@ -65,19 +72,7 @@ namespace _2048
         private void AddStartTiles()
         {
             for (int i = 0; i < StartTileCount; i++)
-                AddRandomTile();
-        }
-
-        private bool AddRandomTile()
-        {
-            int x, y;
-            bool hasAvailable = Grid.RandomAvailableCell(out x, out y);
-            if (hasAvailable)
-            {
-                int value = _random.NextDouble() < 0.9 ? 2 : 4;
-                Grid.Cells[x, y] = value;
-            }
-            return hasAvailable;
+                Grid.AddRandomTile();
         }
     }
 }

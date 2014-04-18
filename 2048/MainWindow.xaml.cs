@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace _2048
 {
@@ -55,6 +56,7 @@ namespace _2048
             InitializeComponent();
 
             GameManager = new GameManager(BoardSize, 2);
+            GameManager.GridModified += GameManagerOnGridModified;
 
             TextBlocks = new TextBlock[BoardSize,BoardSize];
             Borders = new Border[BoardSize,BoardSize];
@@ -94,6 +96,65 @@ namespace _2048
                     Borders[x, y] = border;
                     TextBlocks[x, y] = textBlock;
                 }
+        }
+    
+        private void GameManagerOnGridModified(object sender, EventArgs eventArgs)
+        {
+            Refresh();
+            for (int y = 0; y < BoardSize; y++)
+            {
+                for (int x = 0; x < BoardSize; x++)
+                    System.Diagnostics.Debug.Write(GameManager.Grid.Cells[x, y].ToString(CultureInfo.InvariantCulture).PadLeft(4));
+                System.Diagnostics.Debug.WriteLine(String.Empty);
+            }
+            System.Diagnostics.Debug.WriteLine("===============================");
+
+            AI ai = new AI();
+            List<Directions> moves = ai.GetBestMoves(GameManager.Grid);
+            List<Directions> moves2 = ai.GetBestMoves2(GameManager.Grid);
+
+            if (moves.Any())
+                AdvicesText.Text = moves.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
+            else
+                AdvicesText.Text = "no move";
+            if (moves2.Any())
+                AdvicesText.Text += "***" + moves2.Select(x => x.ToString()).Aggregate((n, i) => n + "|" + i);
+            else
+                AdvicesText.Text += "***no move";
+
+            if (moves2.Any())
+            {
+                //SendDelegate sd = Send;
+                //IAsyncResult asyncResult = null;
+                switch (moves.Last())
+                {
+                    case Directions.None:
+                        // NOP
+                        break;
+                    case Directions.Left:
+                        //Send(Key.Left);
+                        //asyncResult = sd.BeginInvoke(Key.Left, null, null);
+                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Left)));
+                        break;
+                    case Directions.Up:
+                        //Send(Key.Up);
+                        //asyncResult = sd.BeginInvoke(Key.Up, null, null);
+                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Up)));
+                        break;
+                    case Directions.Right:
+                        //Send(Key.Right);
+                        //asyncResult = sd.BeginInvoke(Key.Right, null, null);
+                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Right)));
+                        break;
+                    case Directions.Down:
+                        //Send(Key.Down);
+                        //asyncResult = sd.BeginInvoke(Key.Down, null, null);
+                        Dispatcher.BeginInvoke(new Action(() => Send(Key.Down)));
+                        break;
+                }
+                //if (asyncResult != null)
+                //    sd.EndInvoke(asyncResult);
+            }
         }
 
         private void Refresh()
@@ -193,20 +254,31 @@ namespace _2048
                     GameManager.Move(Directions.Up);
                     break;
             }
-            Refresh();
-            for (int y = 0; y < BoardSize; y++)
-            {
-                for (int x = 0; x < BoardSize; x++)
-                    System.Diagnostics.Debug.Write(GameManager.Grid.Cells[x,y].ToString(CultureInfo.InvariantCulture).PadLeft(4));
-                System.Diagnostics.Debug.WriteLine(String.Empty);
-            }
-            System.Diagnostics.Debug.WriteLine("===============================");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GameManager.Start();
-            Refresh();
+        }
+
+        public void Send(Key key)
+        {
+            if (Keyboard.PrimaryDevice != null)
+            {
+                if (Keyboard.PrimaryDevice.ActiveSource != null)
+                {
+                    var e = new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, key)
+                    {
+                        RoutedEvent = Keyboard.KeyUpEvent
+                    };
+                    InputManager.Current.ProcessInput(e);
+
+                    // Note: Based on your requirements you may also need to fire events for:
+                    // RoutedEvent = Keyboard.PreviewKeyDownEvent
+                    // RoutedEvent = Keyboard.KeyUpEvent
+                    // RoutedEvent = Keyboard.PreviewKeyUpEvent
+                }
+            }
         }
     }
 }

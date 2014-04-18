@@ -24,6 +24,7 @@ namespace _2048
             //manager.Test(16, 8, 4, 2);
             //manager.Test(0, 0, 2, 0);
             //manager.Test(2, 0, 0, 0);
+            //manager.Test(2, 8, 4, 4); // --> generates 0, 0, 2, 16 instead of 0, 2, 8, 8
             //manager.Move(Directions.Left);
             //manager.Move(Directions.Right);
             //manager.Test(
